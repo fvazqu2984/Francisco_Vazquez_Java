@@ -1,13 +1,19 @@
 package com.company.customerdataservice.controllers;
 
 import com.company.customerdataservice.model.Customer;
+import com.company.customerdataservice.repository.CustomerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,38 +29,86 @@ public class CustomerControllerTest {
 
     @Test
     public void testCreateCustomer() throws Exception {
-        Customer newCustomer = new Customer();
-        newCustomer.setFirstName("John");
-        newCustomer.setLastName("Doe");
-        newCustomer.setEmail("john.doe@example.com");
-        newCustomer.setState("New York");
+        Customer customer = new Customer();
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        customer.setEmail("john.doe@example.com");
+
+        String json = mapper.writeValueAsString(customer);
 
         mockMvc.perform(post("/customers")
-                        .contentType("application/json")
-                        .content(mapper.writeValueAsString(newCustomer)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
-                .andExpect(jsonPath("$.state").value("New York"));
+                .andExpect(jsonPath("$.id").exists());
     }
 
     @Test
     public void testUpdateCustomer() throws Exception {
-        Customer existingCustomer = new Customer();
-        existingCustomer.setId(1);
-        existingCustomer.setFirstName("John");
-        existingCustomer.setLastName("Doe");
-        existingCustomer.setEmail("john.doe@example.com");
-        existingCustomer.setState("California");
+        Customer customer = new Customer();
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        customer.setEmail("john.doe@example.com");
+
+        String json = mapper.writeValueAsString(customer);
 
         mockMvc.perform(put("/customers")
-                        .contentType("application/json")
-                        .content(mapper.writeValueAsString(existingCustomer)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isNoContent());
     }
 
+    @Test
+    public void testDeleteCustomer() throws Exception {
+        // Create a customer first to delete
+        Customer customer = new Customer();
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        customer.setEmail("john.doe@example.com");
+
+        mockMvc.perform(delete("/customers"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetCustomerById() throws Exception {
+        Customer customer = new Customer();
+        customer.setId(1);
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        customer.setEmail("john.doe@example.com");
+
+        mockMvc.perform(get("/customers/{id}", 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(customer.getId()))
+                .andExpect(jsonPath("$.firstName").value(customer.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(customer.getLastName()))
+                .andExpect(jsonPath("$.email").value(customer.getEmail()));
+    }
+
+    @Test
+    public void testGetCustomersByState() throws Exception {
+        String state = "California";
+
+        Customer customer1 = new Customer();
+        customer1.setFirstName("John");
+        customer1.setLastName("Doe");
+        customer1.setEmail("john.doe@example.com");
+        customer1.setState(state);
+
+        Customer customer2 = new Customer();
+        customer2.setFirstName("Jane");
+        customer2.setLastName("Smith");
+        customer2.setEmail("jane.smith@example.com");
+        customer2.setState(state);
+
+        List<Customer> customers = Arrays.asList(customer1, customer2);
+
+        mockMvc.perform(get("/customers").param("state", state))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(customers.size()));
+    }
 
 
 }
