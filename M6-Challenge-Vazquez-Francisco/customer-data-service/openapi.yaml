@@ -120,4 +120,3 @@ components:
           type: string
         country:
           type: string
-

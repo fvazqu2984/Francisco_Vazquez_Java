@@ -68,7 +68,7 @@ public class CustomerControllerTest {
         customer.setId(1);
 
         mockMvc.perform(delete("/customers/{id}"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
