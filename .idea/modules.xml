@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Francisco_Vazquez_Java.iml" filepath="$PROJECT_DIR$/.idea/Francisco_Vazquez_Java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/M2-Challenge-Vazquez-Francisco/chatterbook/chatterbook.iml" filepath="$PROJECT_DIR$/M2-Challenge-Vazquez-Francisco/chatterbook/chatterbook.iml" />
+      <module fileurl="file://$PROJECT_DIR$/M1-Challenge-Vazquez-Francisco/starter/accounting-challenge/solved.iml" filepath="$PROJECT_DIR$/M1-Challenge-Vazquez-Francisco/starter/accounting-challenge/solved.iml" />
+    </modules>
+  </component>
+</project>
