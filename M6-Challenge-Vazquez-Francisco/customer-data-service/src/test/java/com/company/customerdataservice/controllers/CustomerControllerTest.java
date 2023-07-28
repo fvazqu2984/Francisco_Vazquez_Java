@@ -65,8 +65,9 @@ public class CustomerControllerTest {
         customer.setFirstName("John");
         customer.setLastName("Doe");
         customer.setEmail("john.doe@example.com");
+        customer.setId(1);
 
-        mockMvc.perform(delete("/customers"))
+        mockMvc.perform(delete("/customers/{id}"))
                 .andExpect(status().isOk());
     }
 
@@ -109,6 +110,5 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(customers.size()));
     }
-
 
 }

@@ -44,7 +44,7 @@ public class CustomerController {
     }
 
     @GetMapping("/customers/{state}")
-    public List<Customer> getCustomersByState(@RequestParam String state) {
+    public List<Customer> getCustomersByState(@PathVariable String state) {
         return repo.findByState(state);
     }
 
