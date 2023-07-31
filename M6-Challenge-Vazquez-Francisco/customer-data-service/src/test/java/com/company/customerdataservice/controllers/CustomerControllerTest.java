@@ -3,12 +3,14 @@ package com.company.customerdataservice.controllers;
 import com.company.customerdataservice.model.Customer;
 import com.company.customerdataservice.repository.CustomerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,7 @@ public class CustomerControllerTest {
     @Test
     public void testCreateCustomer() throws Exception {
         Customer customer = new Customer();
+        customer.setId(1);
         customer.setFirstName("John");
         customer.setLastName("Doe");
         customer.setEmail("john.doe@example.com");
@@ -40,12 +43,17 @@ public class CustomerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists());
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.firstName").exists())
+                .andExpect(jsonPath("$.lastName").exists())
+                .andExpect(jsonPath("$.email").exists());
+
     }
 
     @Test
     public void testUpdateCustomer() throws Exception {
         Customer customer = new Customer();
+        customer.setId(1);
         customer.setFirstName("John");
         customer.setLastName("Doe");
         customer.setEmail("john.doe@example.com");
@@ -60,14 +68,14 @@ public class CustomerControllerTest {
 
     @Test
     public void testDeleteCustomer() throws Exception {
-        // Create a customer first to delete
         Customer customer = new Customer();
+        customer.setId(1);
         customer.setFirstName("John");
         customer.setLastName("Doe");
         customer.setEmail("john.doe@example.com");
-        customer.setId(1);
 
-        mockMvc.perform(delete("/customers/{id}"))
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/customers/{id}", 1))
                 .andExpect(status().isNoContent());
     }
 
@@ -79,7 +87,7 @@ public class CustomerControllerTest {
         customer.setLastName("Doe");
         customer.setEmail("john.doe@example.com");
 
-        mockMvc.perform(get("/customers/{id}", 1))
+        mockMvc.perform(get("/customersById/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(customer.getId()))
                 .andExpect(jsonPath("$.firstName").value(customer.getFirstName()))

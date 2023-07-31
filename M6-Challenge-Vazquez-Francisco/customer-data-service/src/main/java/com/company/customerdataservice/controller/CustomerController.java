@@ -15,6 +15,8 @@ public class CustomerController {
     @Autowired
     CustomerRepository repo;
 
+    //mockbean?
+
     @PostMapping("/customers")
     @ResponseStatus(HttpStatus.CREATED)
     public Customer createCustomer(@RequestBody Customer Customer) {
@@ -28,11 +30,11 @@ public class CustomerController {
     }
 
     @DeleteMapping("/customers/{id}")
-    public void deleteCustomer(@PathVariable int id) {
+    public void deleteCustomer(@PathVariable Integer id) {
         repo.deleteById(id);
     }
 
-    @GetMapping("/customers/{id}")
+    @GetMapping("/customersById/{id}")
     public Customer getCustomerById(@PathVariable int id) {
 
         Optional<Customer> returnVal = repo.findById(id);
