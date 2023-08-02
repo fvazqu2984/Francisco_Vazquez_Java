@@ -74,6 +74,11 @@ public class CustomerControllerTest {
 
     @Test
     public void testDeleteCustomer() throws Exception {
+        Customer customer = new Customer();
+        customer.setId(1);
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        customer.setEmail("john.doe@example.com");
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/customers/{id}", 1))
                 .andExpect(status().isNoContent());
